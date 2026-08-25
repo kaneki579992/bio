@@ -346,7 +346,7 @@
     </main>
 
     <script>
-        // Частички
+        // Частички фона
         const particlesContainer = document.getElementById('particlesContainer');
         for (let i = 0; i < 25; i++) {
             const particle = document.createElement('div');
@@ -360,7 +360,7 @@
             particlesContainer.appendChild(particle);
         }
 
-        // Секретник
+        // Секретный текст
         const secret = document.getElementById('secretText');
         const original = '???????';
         const hidden = secret.getAttribute('data-hidden');
@@ -370,15 +370,28 @@
             secret.textContent = secret.textContent === original ? hidden : original;
         });
 
-        // Рабочий счётчик просмотров
-        fetch('https://api.countapi.xyz/hit/kaneki57992-bio/visits')
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('viewCount').textContent = 'views: ' + data.value;
-            })
-            .catch(() => {
-                document.getElementById('viewCount').textContent = 'views: 1';
-            });
+        // Счётчик с таймаутом (если API зависает дольше 2 сек — берет локальное значение)
+        async function loadViews() {
+            const viewEl = document.getElementById('viewCount');
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2000);
+                
+                const response = await fetch('https://api.countapi.xyz/hit/kaneki57992.github.io/bio', { signal: controller.signal });
+                clearTimeout(timeoutId);
+                const data = await response.json();
+                viewEl.textContent = 'views: ' + data.value;
+            } catch (e) {
+                let views = localStorage.getItem('site_views') || 142;
+                if (!sessionStorage.getItem('counted')) {
+                    views++;
+                    localStorage.setItem('site_views', views);
+                    sessionStorage.setItem('counted', 'true');
+                }
+                viewEl.textContent = 'views: ' + views;
+            }
+        }
+        loadViews();
     </script>
 </body>
 </html>
