@@ -370,14 +370,14 @@
             secret.textContent = secret.textContent === original ? hidden : original;
         });
 
-        // Живой счетчик просмотров
-        fetch('https://api.counterapi.dev/v1/kaneki57992/bio/hit')
+        // Рабочий счётчик просмотров
+        fetch('https://api.countapi.xyz/hit/kaneki57992-bio/visits')
             .then(res => res.json())
             .then(data => {
-                document.getElementById('viewCount').textContent = 'views: ' + data.count;
+                document.getElementById('viewCount').textContent = 'views: ' + data.value;
             })
             .catch(() => {
-                document.getElementById('viewCount').textContent = 'views: N/A';
+                document.getElementById('viewCount').textContent = 'views: 1';
             });
     </script>
 </body>
