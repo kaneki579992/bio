@@ -38,7 +38,6 @@
             perspective: 1000px;
         }
 
-        /* Фоновая сетка */
         body::before {
             content: "";
             position: fixed;
@@ -49,7 +48,6 @@
             z-index: 1;
         }
 
-        /* Контейнер для летающих частичек */
         .particles {
             position: fixed;
             inset: 0;
@@ -67,20 +65,10 @@
         }
 
         @keyframes floatParticle {
-            0% {
-                transform: translateY(105vh) translateX(0);
-                opacity: 0;
-            }
-            20% {
-                opacity: 0.6;
-            }
-            80% {
-                opacity: 0.6;
-            }
-            100% {
-                transform: translateY(-10vh) translateX(50px);
-                opacity: 0;
-            }
+            0% { transform: translateY(105vh) translateX(0); opacity: 0; }
+            20% { opacity: 0.6; }
+            80% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) translateX(50px); opacity: 0; }
         }
 
         .container {
@@ -101,10 +89,7 @@
         }
 
         @keyframes showCard {
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .avatar-container {
@@ -272,19 +257,22 @@
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
-        .link:hover::before {
-            transform: translateX(100%);
+        .link:hover::before { transform: translateX(100%); }
+
+        .status-row {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 28px;
+            font-size: 11.5px;
+            color: #777;
+            font-weight: 600;
         }
 
         .status { 
-            margin-top: 28px; 
             display: flex; 
             align-items: center; 
-            justify-content: center; 
             gap: 8px; 
-            color: #777; 
-            font-size: 11.5px; 
-            font-weight: 600;
         }
 
         .dot { 
@@ -302,6 +290,15 @@
             100% { transform: scale(0.95); opacity: 0.5; }
         }
 
+        .views-counter {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 4px 10px;
+            border-radius: 8px;
+            color: #888;
+            font-family: monospace;
+        }
+
         .footer { 
             margin-top: 14px; 
             color: #444; 
@@ -311,7 +308,6 @@
     </style>
 </head>
 <body>
-    <!-- Блок с летающими частичками -->
     <div class="particles" id="particlesContainer"></div>
 
     <main class="container">
@@ -338,49 +334,51 @@
             <a class="link" href="https://t.me/wipchick" target="_blank"><span>Telegram</span></a>
         </nav>
 
-        <div class="status">
-            <span class="dot"></span>
-            <span>online</span>
+        <div class="status-row">
+            <div class="status">
+                <span class="dot"></span>
+                <span>online</span>
+            </div>
+            <div class="views-counter" id="viewCount">views: ...</div>
         </div>
+
         <div class="footer">© 2026 льоля</div>
     </main>
 
     <script>
-        // Скрипт для генерации случайных летающих частиц
+        // Частички
         const particlesContainer = document.getElementById('particlesContainer');
-        const particleCount = 25;
-
-        for (let i = 0; i < particleCount; i++) {
+        for (let i = 0; i < 25; i++) {
             const particle = document.createElement('div');
             particle.classList.add('particle');
-            
             const size = Math.random() * 3 + 1;
-            const left = Math.random() * 100;
-            const duration = Math.random() * 10 + 8;
-            const delay = Math.random() * 10;
-
             particle.style.width = `${size}px`;
             particle.style.height = `${size}px`;
-            particle.style.left = `${left}%`;
-            particle.style.animationDuration = `${duration}s`;
-            particle.style.animationDelay = `-${delay}s`;
-
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.animationDuration = `${Math.random() * 10 + 8}s`;
+            particle.style.animationDelay = `-${Math.random() * 10}s`;
             particlesContainer.appendChild(particle);
         }
 
-        // Скрипт для секретного текста
+        // Секретник
         const secret = document.getElementById('secretText');
         const original = '???????';
         const hidden = secret.getAttribute('data-hidden');
-
-        const reveal = () => { secret.textContent = hidden; };
-        const hide = () => { secret.textContent = original; };
-
-        secret.addEventListener('mouseenter', reveal);
-        secret.addEventListener('mouseleave', hide);
+        secret.addEventListener('mouseenter', () => secret.textContent = hidden);
+        secret.addEventListener('mouseleave', () => secret.textContent = original);
         secret.addEventListener('click', () => {
             secret.textContent = secret.textContent === original ? hidden : original;
         });
+
+        // Живой счетчик просмотров
+        fetch('https://api.counterapi.dev/v1/kaneki57992/bio/hit')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('viewCount').textContent = 'views: ' + data.count;
+            })
+            .catch(() => {
+                document.getElementById('viewCount').textContent = 'views: N/A';
+            });
     </script>
 </body>
 </html>
