@@ -38,6 +38,7 @@
             perspective: 1000px;
         }
 
+        /* Фоновая сетка */
         body::before {
             content: "";
             position: fixed;
@@ -45,6 +46,41 @@
             background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 0);
             background-size: 32px 32px;
             pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Контейнер для летающих частичек */
+        .particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: floatParticle linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(105vh) translateX(0);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.6;
+            }
+            80% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-10vh) translateX(50px);
+                opacity: 0;
+            }
         }
 
         .container {
@@ -275,9 +311,11 @@
     </style>
 </head>
 <body>
+    <!-- Блок с летающими частичками -->
+    <div class="particles" id="particlesContainer"></div>
+
     <main class="container">
         <div class="avatar-container">
-            <!-- Ссылка на локальную картинку из папки bio -->
             <img class="avatar" src="avatar.png" alt="льоля">
         </div>
         
@@ -308,6 +346,29 @@
     </main>
 
     <script>
+        // Скрипт для генерации случайных летающих частиц
+        const particlesContainer = document.getElementById('particlesContainer');
+        const particleCount = 25;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            const size = Math.random() * 3 + 1;
+            const left = Math.random() * 100;
+            const duration = Math.random() * 10 + 8;
+            const delay = Math.random() * 10;
+
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${left}%`;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.animationDelay = `-${delay}s`;
+
+            particlesContainer.appendChild(particle);
+        }
+
+        // Скрипт для секретного текста
         const secret = document.getElementById('secretText');
         const original = '???????';
         const hidden = secret.getAttribute('data-hidden');
